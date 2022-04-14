@@ -12,6 +12,7 @@ const spawnSyncWithLog = (cmd, args) => {
   }
 };
 
+const pythonCmd = (process.platform === 'darwin') ? 'python3' : 'python';
 const deps = {
   win32: [
     {
@@ -24,7 +25,7 @@ const deps = {
       },
     },
     {
-      cmd: 'python',
+      cmd: pythonCmd,
       fix: () => {
         spawnSyncWithLog('choco', ['install', 'python2', '--yes']);
       },

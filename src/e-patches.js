@@ -18,6 +18,7 @@ program
     try {
       const { root } = evmConfig.current();
       const srcdir = path.resolve(root, 'src');
+      const pythonCmd = (process.platform === 'darwin') ? 'python3' : 'python';
 
       // build the list of targets
       const targets = {};
@@ -39,7 +40,7 @@ program
 
       if (target === 'all') {
         const script = path.resolve(srcdir, 'electron', 'script', 'export_all_patches.py');
-        childProcess.execFileSync('python', [script, patchesConfig], {
+        childProcess.execFileSync(pythonCmd, [script, patchesConfig], {
           cwd: root,
           stdio: 'inherit',
           encoding: 'utf8',
@@ -47,7 +48,7 @@ program
       } else if (targets[target]) {
         const script = path.resolve(srcdir, 'electron', 'script', 'git-export-patches');
         childProcess.execFileSync(
-          'python',
+          pythonCmd,
           [script, '-o', path.resolve(srcdir, 'electron', 'patches', target)],
           { cwd: path.resolve(root, targets[target]), stdio: 'inherit', encoding: 'utf8' },
         );

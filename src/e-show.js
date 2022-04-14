@@ -174,12 +174,13 @@ program
   .action(() => {
     try {
       const config = evmConfig.current();
+      const pythonCmd = (process.platform === 'darwin') ? 'python3' : 'python';
       const options = {
         env: { ...process.env, ...config.env, ...goma.env(config) },
         stdio: 'inherit',
         cwd: goma.dir,
       };
-      childProcess.execFileSync('python', ['goma_ctl.py', 'stat'], options);
+      childProcess.execFileSync(pythonCmd, ['goma_ctl.py', 'stat'], options);
     } catch (e) {
       fatal(e);
     }

@@ -37,6 +37,8 @@ const MSFT_GOMA_PLATFORM_SHAS = {
 
 const isSupportedPlatform = !!GOMA_PLATFORM_SHAS[gomaPlatform];
 
+const pythonCmd = (process.platform === 'darwin') ? 'python3' : 'python';
+
 function downloadAndPrepareGoma(config) {
   if (!isSupportedPlatform) return;
 
@@ -68,7 +70,7 @@ function downloadAndPrepareGoma(config) {
   }[gomaPlatform];
 
   if (fs.existsSync(path.resolve(gomaDir, 'goma_ctl.py'))) {
-    depot.spawnSync(config, 'python', ['goma_ctl.py', 'stop'], {
+    depot.spawnSync(config, pythonCmd, ['goma_ctl.py', 'stop'], {
       cwd: gomaDir,
       stdio: ['ignore'],
     });
@@ -126,7 +128,7 @@ function gomaIsAuthenticated() {
 
   let loggedInInfo;
   try {
-    loggedInInfo = childProcess.execFileSync('python', ['goma_auth.py', 'info'], {
+    loggedInInfo = childProcess.execFileSync(pythonCmd, ['goma_auth.py', 'info'], {
       cwd: gomaDir,
       stdio: ['ignore'],
     });
@@ -145,7 +147,7 @@ function authenticateGoma(config) {
 
   if (!gomaIsAuthenticated()) {
     console.log(color.childExec('goma_auth.py', ['login'], { cwd: gomaDir }));
-    childProcess.execFileSync('python', ['goma_auth.py', 'login'], {
+    childProcess.execFileSync(pythonCmd, ['goma_auth.py', 'login'], {
       cwd: gomaDir,
       stdio: 'inherit',
       env: {
@@ -184,7 +186,7 @@ function ensureGomaStart(config) {
   }
 
   console.log(color.childExec('goma_ctl.py', ['ensure_start'], { cwd: gomaDir }));
-  childProcess.execFileSync('python', ['goma_ctl.py', 'ensure_start'], {
+  childProcess.execFileSync(pythonCmd, ['goma_ctl.py', 'ensure_start'], {
     cwd: gomaDir,
     env: {
       ...process.env,

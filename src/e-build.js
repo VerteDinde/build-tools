@@ -32,6 +32,7 @@ function ensureGNGen(config) {
 }
 
 function runNinja(config, target, useGoma, ninjaArgs) {
+  const pythonCmd = (process.platform === 'darwin') ? 'python3' : 'python';
   if (useGoma && config.goma !== 'none') {
     goma.downloadAndPrepare(config);
 
@@ -41,7 +42,7 @@ function runNinja(config, target, useGoma, ninjaArgs) {
         console.log('Not Authenticated - Triggering Goma Login');
         const { status, error } = depot.spawnSync(
           evmConfig.current(),
-          'python',
+          pythonCmd,
           ['goma_auth.py', 'login'],
           {
             cwd: goma.dir,
